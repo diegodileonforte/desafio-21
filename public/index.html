@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <title>My App</title>
+</head>
+
+<body>
+  <div>
+    <h2 style="text-align:center; margin-top:1rem">Ingresar Producto</h2>
+    <div class="container bg-secondary text-white p-2">
+
+      <div class="mb-3">
+        <label for="title" class="form-label">Producto</label>
+        <input type="text" class="form-control" id="title" name="title" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="price" class="form-label">Precio</label>
+        <input type="number" class="form-control" id="price" name="price" autocomplete="off">
+      </div>
+      <div class="mb-3">
+        <label for="thumbnail" class="form-label">Foto URL</label>
+        <input type="text" class="form-control" id="thumbnail" name="thumbnail" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm" id="btnForm">Agregar Producto</button>
+    </div>
+    <div id="tituloListaProductos">
+      <h2 style="text-align:center; margin:1rem">Lista de Productos</h2>
+    </div>
+    <div class="container bg-light text-dark p-2">
+      <table class="table table-striped" id="table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Foto</th>
+          </tr>
+        </thead>
+        <tbody id="tableProd">
+          <template id="templateList">
+            <tr>
+              <td id="prodTitle"></td>
+              <td id="prodPrice"></td>
+              <td><img src="" alt="imagen" id="prodImg" style="width: 10%"></td>
+            </tr>
+          </template>
+        </tbody>
+
+      </table>
+      <h3 id="aviso"></h3>
+    </div>
+  </div>
+  <div class="container bg-secondary text-white p-2" id="divChat">
+
+    <h1 style="text-align: center">Mensajes</h1>
+    <div style="display:flex; justify-content:space-around">
+      <div>
+        <div id="ventana">
+          <div id="pantalla"></div>
+        </div>
+      </div>
+      <div>
+        <input type="text" id="userChat" placeholder="E-mail" required>
+        <input type="text" id="messageChat" placeholder="Mensaje" required>
+        <button type="submit" id="btnChat" class="btn btn-primary btn-sm">Enviar</button>
+      </div>
+    </div>
+
+  </div>
+  <script src="client.js"></script>
+</body>
+
+</html>
