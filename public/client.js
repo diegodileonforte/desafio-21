@@ -5,15 +5,22 @@ let botonChat = document.getElementById('btnChat')
 botonChat.addEventListener('click', () => { validar() })
 
 function validar() {
-    let user = document.getElementById('userChat').value;
+    let user = document.getElementById('userMail').value;
     let mensaje = document.getElementById('messageChat').value
     if (mensaje === "" || user === "") {
         alert(`Complete todos los campos`)
     } else {
         let nuevoMensaje = {
-            user: user,
-            mensaje: mensaje
-        };
+            author: {
+                id: document.getElementById('userMail').value,
+                nombre: document.getElementById('userName').value,
+                apellido: document.getElementById('userLastName').value,
+                edad: document.getElementById('userAge').value,
+                alias: document.getElementById('userAlias').value,
+                avatar: document.getElementById('userAvatar').value
+            },
+            text: document.getElementById('messageChat').value,
+        }
         socket.emit('new-message', nuevoMensaje);
         document.getElementById('messageChat').value = ""
     }
@@ -28,20 +35,39 @@ newDate = [
     date.getMinutes(),
     date.getSeconds()].join(':')
 
-
 function renderMessage(data) {
     let html = data.map((elem, i) => {
         return (`
-        <div>
-        Usuario: <strong style="color:blue">${elem.user}</strong></span>
-        (a las <span>${newDate.toString()}</span>)
-        dijo: <i style="color:green">${elem.mensaje}</i></div>`);
+            <div>
+            Usuario: <strong style="color:blue">${elem.author.alias}</strong></span>
+            (a las <span>${newDate.toString()}</span>)
+            dijo: <i style="color:green">${elem.text}</i></div>`);
     }).join(' ');
-    document.getElementById('pantalla').innerHTML = html;
+    document.getElementById('pantalla').innerHTML = html
+}
+
+const denormalize = (normalizedChats) => {
+    const userSchema = new schema.Entity('users', {}, { idAttribute: 'id', })
+    const messagesSchema = new schema.Entity('messages', {
+        text: userSchema
+    })
+    const authorSchema = new schema.Entity('messages', {
+        author: userSchema,
+        texto: [messagesSchema]
+    })
+
+    const denormalizedChats = denormalize(normalizedChats.result, authorSchema, normalizedChats.entities)
+
+    console.log(denormalizedChats)
+    
+    console.log(JSON.stringify(denormalizedChats).length)
+    return denormalizedChats;
 }
 
 socket.on('new-message-server', (data) => {
-    renderMessage(data)
+    const denormalizedChat = denormalize(data)
+    console.log(denormalizedChat)
+    renderMessage(denormalizedChat)
 })
 
 document.getElementById('btnForm').addEventListener('click', () => { validarForm() })
@@ -59,7 +85,7 @@ function validarForm() {
             thumbnail: thumbnail
         }
         socket.emit('new-producto', newProd)
-        
+
         document.getElementById('title').value = ""
         document.getElementById('price').value = ""
         document.getElementById('thumbnail').value = ""
@@ -93,8 +119,8 @@ const verProdHtml = data => {
 
 
 socket.on('new-prod-server', async data => {
-    let array = [] 
+    let array = []
     array.push(await data)
     verProdHtml(array)
-    
+
 })

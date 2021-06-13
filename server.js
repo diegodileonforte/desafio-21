@@ -4,6 +4,8 @@ import { Server as IOServer } from 'socket.io'
 import router from './routes/productos.routes.js'
 import routerMsg from './routes/mensajes.routes.js'
 import mongoose from 'mongoose'
+import { normalize, schema } from "normalizr"
+import utils from "util"
 
 import Mensaje from './controllers/Mensaje.js'
 const msgClass = new Mensaje()
@@ -17,7 +19,9 @@ const io = new IOServer(httpServer)
 const PORT = 8080
 
 mongoose.connect('mongodb://localhost:27017/ecommerce', {
-    useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
 }).then(() => { console.log('Conectado a Mongo') },
     err => { err }
 )
@@ -41,6 +45,28 @@ io.on('connection', socket => {
         const message = await data;
         chat.push(data);
         msgClass.addMsg({ message })
+       
+        const userSchema = new schema.Entity('users', {}, { idAttribute: 'id', })
+        const messagesSchema = new schema.Entity('messages', {
+            text: userSchema
+        })
+        const authorSchema = new schema.Entity('messages', {
+            author: userSchema,
+            texto: [messagesSchema]
+        })
+
+        const normalizedData = normalize(chat, authorSchema)
+        console.log(utils.inspect(normalizedData, false, 15, true))
+
+        const originalLength = JSON.stringify(chat).length
+        console.log('Longitud de chat riginal', originalLength)        
+
+        const nomalizedLength = JSON.stringify(normalizedData).length
+        console.log('Longitud de chat normalizado', nomalizedLength)
+
+        const compressionPerc = (nomalizedLength * 100) / originalLength
+        console.log(`Porcentaje de compresión: ${compressionPerc} %`)
+
         io.sockets.emit('new-message-server', chat)
     })
 

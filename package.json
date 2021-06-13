@@ -13,8 +13,9 @@
   "dependencies": {
     "express": "^4.17.1",
     "faker": "^5.5.3",
-    "mongoose": "^5.12.11",
+    "mongoose": "^5.12.13",
     "nodemon": "^2.0.7",
+    "normalizr": "^3.6.1",
     "socket.io": "^4.0.1"
   }
 }

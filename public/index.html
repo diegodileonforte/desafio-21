@@ -9,6 +9,7 @@
     integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
   <link rel="stylesheet" href="./css/style.css">
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/normalizr@3.6.1/dist/normalizr.js"></script>
   <title>My App</title>
 </head>
 
@@ -67,7 +68,12 @@
         </div>
       </div>
       <div>
-        <input type="text" id="userChat" placeholder="E-mail" required>
+        <input type="text" id="userMail" placeholder="E-mail" required>
+        <input type="text" id="userName" placeholder="Name" class="mt-1" required>
+        <input type="text" id="userLastName" placeholder="Last Name" class="mt-1" required>
+        <input type="number" id="userAge" placeholder="Age" class="mt-1" required>
+        <input type="text" id="userAlias" placeholder="Alias" class="mt-1" required>
+        <input type="text" id="userAvatar" placeholder="Avatar" class="mt-1" required>
         <input type="text" id="messageChat" placeholder="Mensaje" required>
         <button type="submit" id="btnChat" class="btn btn-primary btn-sm">Enviar</button>
       </div>

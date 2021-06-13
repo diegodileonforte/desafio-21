@@ -18,8 +18,9 @@ class Mensaje {
 
     async findAllMsg(req, res) {
         try {
-            let msgInDb = await MensajeDAO.find();
-            return res.status(200).json(msgInDb);
+            const msgInDb = await MensajeDAO.find()
+            const id = mockId
+            return res.status(200).json({id, msgInDb})
         } catch (error) {
             return res.status(400).json({ mensaje: 'Ocurrió un error', error })
         }
