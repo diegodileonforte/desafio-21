@@ -14,18 +14,22 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h3 style="text-align:center" class="my-4">Login</h3>
-        <form method="get" action="/login" autocomplete="off">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" id="user" placeholder="Ingrese su nombre"
-                    aria-label="Recipient's username" aria-describedby="button-addon2" name="user" required>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Ingresar</button>
-                </div>
-            </div>
+
+    <% if (name) { %>
+    <div class="container my-5 py-3 bg-secondary text-white text-center">
+
+        <h2>
+            Bienvenido <%= name %>!
+        </h2>
+        <form method="get" action="/logout">
+            <input type="hidden" class="form-control" id="name" value=<%- name %> aria-label="Recipient's username"
+                aria-describedby="button-addon2" name="name">
+            <button class="btn-sm btn-warning" type="submit">Logout</button>
         </form>
     </div>
-</body>
+    <% } %>
 
+    <%- include ('prodAndChat.html') -%>
+
+</body>
 </html>
