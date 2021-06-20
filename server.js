@@ -5,52 +5,30 @@ import router from './routes/productos.routes.js'
 import routerMsg from './routes/mensajes.routes.js'
 import mongoose from 'mongoose'
 
-import { normalize, schema } from "normalizr"
-import utils from "util"
-
-import session from 'express-session';
-import cookieParser from 'cookie-parser'
-
-import Mensaje from './controllers/Mensaje.js'
-const msgClass = new Mensaje()
-
-import Producto from './controllers/Producto.js'
-const prodClass = new Producto()
-
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
 const PORT = 8080
 
-mongoose.connect('mongodb://localhost:27017/ecommerce', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-}).then(() => { console.log('Conectado a Mongo') },
-    err => { err }
-)
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import cookieParser from 'cookie-parser';
 
-app.use(express.static('public'))
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-app.use('/productos', router)
-app.use('/mensajes', routerMsg)
-
-app.set('views', './public');
-app.set('view engine', 'ejs')
+const url = 'mongodb+srv://diegodileonforte:*****@cluster0.wnyby.mongodb.net/test?authSource=admin&replicaSet=atlas-2ugqp6-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true'
+const options = { useNewUrlParser: true, useUnifiedTopology: true };
 
 app.use(session({
-    name: 'Desafio24',
-    secret: 'shhh',
+    store: MongoStore.create({
+        mongoUrl: url,
+        mongoOptions: options,
+        ttl: 60 * 10,
+    }),
+    secret: 'shhhh',
     resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    cookie: {
-        maxAge: 60000,
-}}))
+    saveUninitialized: false
+}))
 
 app.get('/login', (req, res) => {
     req.session.user = req.query.user
@@ -76,6 +54,38 @@ app.get('/logout', (req, res) => {
         }
     })
 })
+
+mongoose.connect('mongodb://localhost:27017/ecommerce', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}).then(() => { console.log('Conectado a Mongo') },
+    err => { err }
+)
+
+app.use(express.static('public'))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use('/productos', router)
+app.use('/mensajes', routerMsg)
+
+app.set('views', './public');
+app.set('view engine', 'ejs')
+
+//Login con Session
+
+import normalizr from "normalizr"
+const normalize = normalizr.normalize
+const schema = normalizr.schema
+import utils from "util"
+
+import Mensaje from './controllers/Mensaje.js'
+const msgClass = new Mensaje()
+
+import Producto from './controllers/Producto.js'
+const prodClass = new Producto()
 
 //Chat con Normalizr
 
